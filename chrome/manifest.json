@@ -1,0 +1,29 @@
+{
+	"manifest_version": 2,
+
+	"name": "Snipte",
+	"description": "Automatically detects websites that have sniptes",
+	"version": "1.0",
+
+	"permissions": [
+		"http://snipte.org/",
+		"activeTab",
+		"tabs", 
+		"http://*/*", 
+		"https://*/*"
+	],
+	"browser_action": {
+		"default_title": "Snipte Chrome Extension",
+		"default_icon": "img/logo/eye-close.png"
+	},
+	"content_scripts": [
+			{
+				"matches" : ["http://*/*"],
+				"js" : ["content.js"]
+			}
+	],
+	
+	"background": {
+		"scripts": ["background.js"]
+	}
+}
