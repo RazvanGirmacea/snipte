@@ -1,61 +1,56 @@
-var Snipte = {
-	// cache the source code
-	html: null,
-	tabs: null, // save the tabs that have the snippets + clean on URL change
-	icon: {
-		found: 'img/logo/eye-open.png',
-		not_found: 'img/logo/eye-close.png'
-	},
-	
-	// start and end tag
-	tag: {
-		start: '< *** Start Snipte >',
-		end: '< ***** End Snipte >'
-	},
+var status_tabs = []; // save tabs "found" status
 
-	initiate: function(html) {
-		this.html = html;
-		
-		if(!this.html) {
-			console.log("There is no HTML");
-			return false;
-		}	
-		
-		// look for the Snipte
-		this.parse();
-		
-	},
-	
-	parse: function() {
-		if(!this.html) {
-			console.log("Error: " + "There is no document");
-			return false;
-		}
-		
-		if(this.html.indexOf(this.tag.start) != -1 && this.html.indexOf(this.tag.end) != -1) {
-			this.updateIcon(this.icon.found);
-		} else {
-			this.updateIcon(this.icon.not_found);
-		}
-
-	},
-	
-	updateIcon: function(icon_name) {
-		chrome.browserAction.setIcon({path: icon_name});
-	}
-}
+var SnipteBackground = {
+  icon: {
+    found: 'img/logo/eye-open.png',
+    not_found: 'img/logo/eye-close.png'
+  },
 
 
-chrome.browserAction.onClicked.addListener(function(tab) {  
-	console.log("Pushed button");
+  initiate: function(tab, found) {
+    if(found) {
+      this.updateIcon(this.icon.found);
+      if(status_tabs.indexOf(tab.id) == -1) {
+        status_tabs.push(tab.id);
+      }
+
+      // send request
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://girmacea.com/snipte/server/script.php", true);
+      xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+      xhr.send("url=" + encodeURIComponent(tab.url));
+
+    } else {
+      this.updateIcon(this.icon.not_found);
+      if(status_tabs.indexOf(tab.id) != -1) {
+        status_tabs.splice(status_tabs.indexOf(tab.id),1);
+      }
+    }
+  },
+
+
+  updateIcon: function(icon_name) {
+    chrome.browserAction.setIcon({path: icon_name});
+  }
+};
+
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+  chrome.tabs.create({'url': "http://snipte.org"});
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-	//console.log(sender);
-	if(request.status == "ok") {
-		Snipte.initiate(request.html);
+	if(request.action == "find") {
+		SnipteBackground.initiate(sender.tab, request.response);
+//    console.log(status_tabs);
 	}
-	
 });
 
-
+chrome.tabs.onActivated.addListener(function(current){
+//  console.log(current.tabId);
+  if(status_tabs.indexOf(current.tabId) == -1) {
+    SnipteBackground.updateIcon(SnipteBackground.icon.not_found);
+  } else {
+    SnipteBackground.updateIcon(SnipteBackground.icon.found);
+  }
+});

@@ -4,17 +4,20 @@
 	"name": "Snipte",
 	"description": "Automatically detects websites that have sniptes",
 	"version": "1.0",
+  "icons": { "128" : "img/logo/eye-open-128.png"},
 
 	"permissions": [
 		"http://snipte.org/",
+    "http://girmacea.com/*",
 		"activeTab",
-		"tabs", 
-		"http://*/*", 
-		"https://*/*"
+		"tabs"
+//		"http://*/*",
+//		"https://*/*"
 	],
 	"browser_action": {
 		"default_title": "Snipte Chrome Extension",
-		"default_icon": "img/logo/eye-close.png"
+		"default_icon": "img/logo/eye-close.png",
+    "default_name": "Snipte"
 	},
 	"content_scripts": [
 			{
@@ -22,8 +25,9 @@
 				"js" : ["content.js"]
 			}
 	],
-	
+
 	"background": {
-		"scripts": ["background.js"]
+		"scripts": ["background.js"],
+    "persistent": false
 	}
 }
