@@ -1,6 +1,9 @@
 var status_tabs = []; // save tabs "found" status
 
 var SnipteBackground = {
+
+  api_url: "http://api.snipte.org/server/script.php",
+
   icon: {
     found: 'img/logo/eye-open.png',
     not_found: 'img/logo/eye-close.png'
@@ -16,7 +19,7 @@ var SnipteBackground = {
 
       // send request
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://girmacea.com/snipte/server/script.php", true);
+      xhr.open("POST", this.api_url, true);
       xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
       xhr.send("url=" + encodeURIComponent(tab.url));
 

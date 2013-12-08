@@ -7,7 +7,8 @@
   "icons": { "128" : "img/logo/eye-open-128.png"},
 
 	"permissions": [
-		"http://snipte.org/",
+		"http://snipte.org/*",
+    "http://api.snipte.org/*",
     "http://girmacea.com/*",
 		"activeTab",
 		"tabs"
