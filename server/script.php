@@ -7,6 +7,7 @@ mysql_select_db($db_database) or die(mysql_error());
 if(count($_POST)) {
 
   $url = filter_var($_POST["url"], FILTER_VALIDATE_URL);
+  $url = str_replace("www.", "", $url);
   if(!$url) {
     exit('none');
   }
